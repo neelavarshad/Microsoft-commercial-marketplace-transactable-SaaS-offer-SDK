@@ -76,8 +76,8 @@ public class Startup
             ClientSecret = this.Configuration["SaaSApiConfiguration:ClientSecret"] ?? String.Empty,
             FulFillmentAPIBaseURL = this.Configuration["SaaSApiConfiguration:FulFillmentAPIBaseURL"],
             MTClientId = this.Configuration["SaaSApiConfiguration:MTClientId"] ?? Guid.Empty.ToString(),
-            ClientCertificate = this.Configuration["SaaSApiConfiguration:ClientCertificate"],
-            ClientCertificatePassword = this.Configuration["SaaSApiConfiguration:ClientCertificatePassword"],
+            ClientCertificate = this.Configuration["SaaSApiConfiguration:ClientCertificate"] ?? String.Empty,
+            ClientCertificatePassword = this.Configuration["SaaSApiConfiguration:ClientCertificatePassword"] ?? String.Empty,
             FulFillmentAPIVersion = this.Configuration["SaaSApiConfiguration:FulFillmentAPIVersion"],
             GrantType = this.Configuration["SaaSApiConfiguration:GrantType"],
             Resource = this.Configuration["SaaSApiConfiguration:Resource"],
@@ -91,25 +91,26 @@ public class Startup
             KnownUsers = this.Configuration["KnownUsers"],
         };
 
-        X509Certificate2 clientCertificate = null;
+        //X509Certificate2 clientCertificate = null;
 
-        if (!string.IsNullOrEmpty(config.ClientCertificate))
-        {
-            try
-            {
-                clientCertificate = new X509Certificate2(config.ClientCertificate, config.ClientCertificatePassword);
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException("Failed to load the client certificate.", ex);
-            }
-        }
+        //if (!string.IsNullOrEmpty(config.ClientCertificate))
+        //{
+        //    try
+        //    {
+        //        clientCertificate = new X509Certificate2(config.ClientCertificate, config.ClientCertificatePassword);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new InvalidOperationException("Failed to load the client certificate.", ex);
+        //    }
+        //}
 
-        if (clientCertificate == null)
-        {
-            throw new InvalidOperationException("Client certificate is required but not provided or could not be loaded.");
-        }
+        //if (clientCertificate == null)
+        //{
+        //    throw new InvalidOperationException("Client certificate is required but not provided or could not be loaded.");
+        //}
 
+        var clientCertificate = new X509Certificate2(config.ClientCertificate, config.ClientCertificatePassword);
 
         var creds = new ClientCertificateCredential(config.TenantId.ToString(), config.ClientId.ToString(), clientCertificate);
         var boolMultiTenant = config.IsAdminPortalMultiTenant?.ToLower().Trim() ?? "false";
