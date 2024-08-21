@@ -267,7 +267,9 @@ if (!($ADApplicationID)) {
 		}
 
 		#Required to save pfx in keyvault
-		$pfxBytes = [System.IO.File]::ReadAllBytes($certPfxFile);
+		$currentDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
+		$pfxPath = Join-Path -Path $currentDirectory -ChildPath "cert.pfx"
+		$pfxBytes = [System.IO.File]::ReadAllBytes($pfxPath);
 		$base64Value = [System.Convert]::ToBase64String($pfxBytes);
 
     }
@@ -506,7 +508,7 @@ Write-host "      ➡️ Add Secrets"
 az keyvault secret set --vault-name $KeyVault --name ADApplicationSecret --value="$ADApplicationSecret" --output $azCliOutput
 az keyvault secret set --vault-name $KeyVault --name DefaultConnection --value $Connection --output $azCliOutput
 az keyvault secret set --vault-name $KeyVault --name "pfx-cert" --value $base64Value --output $azCliOutput
-az keyvault secret set --vault-name $KeyVault --name "pfx-password" --value $certPassword
+az keyvault secret set --vault-name $KeyVault --name "pfx-password" --value $certPassword --output $azCliOutput
 Write-host "      ➡️ Update Firewall"
 az keyvault update --name $KeyVault --resource-group $ResourceGroupForDeployment --default-action Deny --output $azCliOutput
 az keyvault network-rule add --name $KeyVault --resource-group $ResourceGroupForDeployment --vnet-name $VnetName --subnet $WebSubnetName --output $azCliOutput
