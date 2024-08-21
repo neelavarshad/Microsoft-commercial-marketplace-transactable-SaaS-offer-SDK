@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE file in the project root for license information.
 
 using System;
+using System.Security.Cryptography.X509Certificates;
 using Azure.Identity;
 using Marketplace.SaaS.Accelerator.AdminSite.Controllers;
 using Marketplace.SaaS.Accelerator.DataAccess.Context;
@@ -73,6 +74,8 @@ public class Startup
             FulFillmentAPIBaseURL = this.Configuration["SaaSApiConfiguration:FulFillmentAPIBaseURL"],
             MTClientIdAdmin = this.Configuration["SaaSApiConfiguration:MTClientIdAdmin"] ?? Guid.Empty.ToString(),
             MTClientIdPortal = this.Configuration["SaaSApiConfiguration:MTClientIdPortal"] ?? Guid.Empty.ToString(),
+            ClientCertificate = this.Configuration["SaaSApiConfiguration:ClientCertificate"],
+            ClientCertificatePassword = this.Configuration["SaaSApiConfiguration:ClientCertificatePassword"],
             FulFillmentAPIVersion = this.Configuration["SaaSApiConfiguration:FulFillmentAPIVersion"],
             GrantType = this.Configuration["SaaSApiConfiguration:GrantType"],
             Resource = this.Configuration["SaaSApiConfiguration:Resource"],
@@ -84,7 +87,8 @@ public class Startup
         {
             KnownUsers = this.Configuration["KnownUsers"],
         };
-        var creds = new ClientSecretCredential(config.TenantId.ToString(), config.ClientId.ToString(), config.ClientSecret);
+        var clientCertificate = new X509Certificate2( config.ClientCertificate, config.ClientCertificatePassword);
+        var creds = new ClientCertificateCredential(config.TenantId.ToString(), config.ClientId.ToString(), clientCertificate);
 
 
         services

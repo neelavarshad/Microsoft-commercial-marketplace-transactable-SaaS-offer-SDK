@@ -48,6 +48,22 @@ public class SaaSApiClientConfiguration
     public string MTClientIdPortal { get; set; }
 
     /// <summary>
+    /// Gets or sets the AAD Client ID certificate.
+    /// </summary>
+    /// <value>
+    /// The resource.
+    /// </value>
+    public string ClientCertificate { get; set; }
+
+    /// <summary>
+    /// Gets or sets the AAD Client ID certificate's password.
+    /// </summary>
+    /// <value>
+    /// The resource.
+    /// </value>
+    public string ClientCertificatePassword { get; set; }
+
+    /// <summary>
     /// Gets or sets the resource.
     /// </summary>
     /// <value>
