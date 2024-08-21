@@ -91,7 +91,12 @@ public class Startup
             KnownUsers = this.Configuration["KnownUsers"],
         };
 
-        var clientCertificate = new X509Certificate2(config.ClientCertificate, config.ClientCertificatePassword);
+        X509Certificate2 clientCertificate = null;
+        if (!string.IsNullOrEmpty(config.ClientCertificate))
+        {
+            clientCertificate = new X509Certificate2(config.ClientCertificate, config.ClientCertificatePassword);
+        }
+        
         
         var creds = new ClientCertificateCredential(config.TenantId.ToString(), config.ClientId.ToString(), clientCertificate);
         var boolMultiTenant = config.IsAdminPortalMultiTenant?.ToLower().Trim() ?? "false";
