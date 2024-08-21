@@ -245,7 +245,7 @@ if (!($ADApplicationID)) {
 		Write-Host "Creating PEM certificate"
 		$certKeyFile = "cert.key"
 		$certPemFile = "cert.pem"
-		$certSubject = "/CN="$WebAppNamePrefix
+		$certSubject = "/CN="+$WebAppNamePrefix
 		$certPfxFile = "cert.pfx"
 		openssl req -x509 -nodes -days 730 -newkey rsa:2048 -keyout $certKeyFile -out $certPemFile -subj $certSubject
 
