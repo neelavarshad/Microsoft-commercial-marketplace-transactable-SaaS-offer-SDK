@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using Azure.Identity;
 using Marketplace.SaaS.Accelerator.AdminSite.Controllers;
 using Marketplace.SaaS.Accelerator.DataAccess.Context;
@@ -75,6 +76,8 @@ public class Startup
             ClientSecret = this.Configuration["SaaSApiConfiguration:ClientSecret"] ?? String.Empty,
             FulFillmentAPIBaseURL = this.Configuration["SaaSApiConfiguration:FulFillmentAPIBaseURL"],
             MTClientId = this.Configuration["SaaSApiConfiguration:MTClientId"] ?? Guid.Empty.ToString(),
+            ClientCertificate = this.Configuration["SaaSApiConfiguration:ClientCertificate"],
+            ClientCertificatePassword = this.Configuration["SaaSApiConfiguration:ClientCertificatePassword"],
             FulFillmentAPIVersion = this.Configuration["SaaSApiConfiguration:FulFillmentAPIVersion"],
             GrantType = this.Configuration["SaaSApiConfiguration:GrantType"],
             Resource = this.Configuration["SaaSApiConfiguration:Resource"],
@@ -87,7 +90,10 @@ public class Startup
         {
             KnownUsers = this.Configuration["KnownUsers"],
         };
-        var creds = new ClientSecretCredential(config.TenantId.ToString(), config.ClientId.ToString(), config.ClientSecret);
+
+        var clientCertificate = new X509Certificate2(config.ClientCertificate, config.ClientCertificatePassword);
+        
+        var creds = new ClientCertificateCredential(config.TenantId.ToString(), config.ClientId.ToString(), clientCertificate);
         var boolMultiTenant = config.IsAdminPortalMultiTenant?.ToLower().Trim() ?? "false";
 
 

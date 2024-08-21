@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using Azure.Identity;
 using Marketplace.SaaS.Accelerator.DataAccess.Context;
 using Marketplace.SaaS.Accelerator.DataAccess.Contracts;
@@ -38,10 +39,12 @@ class Program
             ClientSecret = configuration["SaaSApiConfiguration:ClientSecret"],
             GrantType = configuration["SaaSApiConfiguration:GrantType"],
             Resource = configuration["SaaSApiConfiguration:Resource"],
-            TenantId = configuration["SaaSApiConfiguration:TenantId"]
+            TenantId = configuration["SaaSApiConfiguration:TenantId"],
+            ClientCertificate = configuration["SaaSApiConfiguration:ClientCertificate"],
+            ClientCertificatePassword = configuration["SaaSApiConfiguration:ClientCertificatePassword"]
         };
-
-        var creds = new ClientSecretCredential(config.TenantId.ToString(), config.ClientId.ToString(), config.ClientSecret);
+        var clientCertificate = new X509Certificate2(config.ClientCertificate, config.ClientCertificatePassword);
+        var creds = new ClientCertificateCredential(config.TenantId.ToString(), config.ClientId.ToString(), clientCertificate);
         var versionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
 
         var services = new ServiceCollection()

@@ -29,6 +29,7 @@ using Microsoft.Marketplace.SaaS;
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Marketplace.SaaS.Accelerator.CustomerSite;
 
@@ -70,6 +71,8 @@ public class Startup
             ClientId = this.Configuration["SaaSApiConfiguration:ClientId"],
             ClientSecret = this.Configuration["SaaSApiConfiguration:ClientSecret"],
             MTClientId = this.Configuration["SaaSApiConfiguration:MTClientId"],
+            ClientCertificate = this.Configuration["SaaSApiConfiguration:ClientCertificate"],
+            ClientCertificatePassword = this.Configuration["SaaSApiConfiguration:ClientCertificatePassword"],
             FulFillmentAPIBaseURL = this.Configuration["SaaSApiConfiguration:FulFillmentAPIBaseURL"],
             FulFillmentAPIVersion = this.Configuration["SaaSApiConfiguration:FulFillmentAPIVersion"],
             GrantType = this.Configuration["SaaSApiConfiguration:GrantType"],
@@ -79,7 +82,8 @@ public class Startup
             TenantId = this.Configuration["SaaSApiConfiguration:TenantId"],
             Environment = this.Configuration["SaaSApiConfiguration:Environment"]
         };
-        var creds = new ClientSecretCredential(config.TenantId.ToString(), config.ClientId.ToString(), config.ClientSecret);
+        var clientCertificate = new X509Certificate2(config.ClientCertificate, config.ClientCertificatePassword);
+        var creds = new ClientCertificateCredential(config.TenantId.ToString(), config.ClientId.ToString(), clientCertificate);
 
         services
             .AddAuthentication(options =>
