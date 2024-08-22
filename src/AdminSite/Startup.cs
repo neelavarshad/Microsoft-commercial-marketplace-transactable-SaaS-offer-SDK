@@ -126,7 +126,7 @@ public class Startup
         // Create the X509Certificate2 object
         X509Certificate2 certificate = new X509Certificate2(certificateBytes, config.ClientCertificatePassword);
         //var clientCertificate = new X509Certificate2(config.ClientCertificate, config.ClientCertificatePassword);
-        var creds = new ClientCertificateCredential(config.TenantId.ToString(), config.ClientId.ToString(), clientCertificate);
+        var creds = new ClientCertificateCredential(config.TenantId.ToString(), config.ClientId.ToString(), certificate);
                 
         var boolMultiTenant = config.IsAdminPortalMultiTenant?.ToLower().Trim() ?? "false";
 
