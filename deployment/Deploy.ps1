@@ -317,7 +317,7 @@ if (!($ADApplicationID)) {
 		}
 
 		$currentDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
-		$CertPathPfx = Join-Path -Path $currentDirectory -ChildPath $certPfxFile
+		$CertPathPfx = Join-Path -Path $currentDirectory -ChildPath "cert.pfx"
 		$policy = New-AzKeyVaultCertificatePolicy -IssuerName "Self" -SubjectName "CN=$WebAppNamePrefix" -SecretContentType 'application/x-pkcs12' -ValidityInMonths (24)
 		$secureCertPassword = ConvertTo-SecureString -String $certPassword -AsPlainText -Force
 		Import-AzKeyVaultCertificate -VaultName $KeyVault -Name $certPfxFile -FilePath $CertPathPfx -Password $secureCertPassword -PolicyObject $policy
