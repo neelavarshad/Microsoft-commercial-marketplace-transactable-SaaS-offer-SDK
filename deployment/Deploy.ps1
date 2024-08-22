@@ -320,7 +320,7 @@ if (!($ADApplicationID)) {
 
 		$policy = New-AzKeyVaultCertificatePolicy -IssuerName "Self" -SubjectName "CN=$WebAppNamePrefix" -SecretContentType 'application/x-pkcs12' -ValidityInMonths (24)
 		$secureCertPassword = ConvertTo-SecureString -String $certPassword -AsPlainText -Force
-		Import-AzKeyVaultCertificate -VaultName $kvName -Name $certPfxFile -FilePath $currentDirectory -Password $secureCertPassword -PolicyObject $policy
+		Import-AzKeyVaultCertificate -VaultName $KeyVault -Name $certPfxFile -FilePath $currentDirectory -Password $secureCertPassword -PolicyObject $policy
 
 
 		#Required to save pfx in keyvault
