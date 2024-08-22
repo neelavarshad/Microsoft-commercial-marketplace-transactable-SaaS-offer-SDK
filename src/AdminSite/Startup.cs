@@ -109,7 +109,7 @@ public class Startup
         //{
         //    throw new InvalidOperationException("Client certificate is required but not provided or could not be loaded.");
         //}
-        if (!string.IsNullOrEmpty(config.ClientCertificate) && !string.IsNullOrEmpty(config.ClientCertificatePassword)
+        if (!string.IsNullOrEmpty(config.ClientCertificate) && !string.IsNullOrEmpty(config.ClientCertificatePassword))
         { 
             var clientCertificate = new X509Certificate2(config.ClientCertificate, config.ClientCertificatePassword);
             var creds = new ClientCertificateCredential(config.TenantId.ToString(), config.ClientId.ToString(), clientCertificate);
