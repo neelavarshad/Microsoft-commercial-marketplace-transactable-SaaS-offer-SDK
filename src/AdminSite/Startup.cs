@@ -32,9 +32,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.Marketplace.Metering;
 using Microsoft.Marketplace.SaaS;
-using Azure.Security.KeyVault.Secrets;
-using System.Threading.Tasks;
-using System.Runtime.CompilerServices;
 using Marketplace.SaaS.Accelerator.Services.Helpers;
 
 
