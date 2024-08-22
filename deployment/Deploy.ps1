@@ -316,8 +316,15 @@ if (!($ADApplicationID)) {
 			Write-Host "Certificate creation failed. The certificate file does not exist."
 		}
 
-		#Required to save pfx in keyvault
 		$currentDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
+
+		$policy = New-AzKeyVaultCertificatePolicy -IssuerName "Self" -SubjectName "CN=$WebAppNamePrefix" -SecretContentType 'application/x-pkcs12' -ValidityInMonths (24)
+		$secureCertPassword = ConvertTo-SecureString -String $certPassword -AsPlainText -Force
+		Import-AzKeyVaultCertificate -VaultName $kvName -Name $certPfxFile -FilePath $currentDirectory -Password $secureCertPassword -PolicyObject $policy
+
+
+		#Required to save pfx in keyvault
+		
 		$pfxPath = Join-Path -Path $currentDirectory -ChildPath "cert.pfx"
 		$pfxBytes = [System.IO.File]::ReadAllBytes($pfxPath);
 		$base64Value = [System.Convert]::ToBase64String($pfxBytes);

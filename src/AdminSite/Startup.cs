@@ -112,7 +112,20 @@ public class Startup
         //}
         System.Console.WriteLine($"Client Certificate: {config.ClientCertificate}");
         System.Console.WriteLine($"Client Certificate thumbprint: {config.ClientCertificatePassword}");
-        var clientCertificate = new X509Certificate2(config.ClientCertificate, config.ClientCertificatePassword);
+
+        string keyVaultUrl = "https://cert-auth-test-kv.vault.azure.net/";
+        string certificateName = "cert.pfx";
+
+        // Create a client to access the Key Vault
+        var client = new CertificateClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
+
+        // Retrieve the certificate
+        KeyVaultCertificateWithPolicy certificateWithPolicy = client.GetCertificate(certificateName);
+        byte[] certificateBytes = certificateWithPolicy.Cer;
+
+        // Create the X509Certificate2 object
+        X509Certificate2 certificate = new X509Certificate2(certificateBytes, config.ClientCertificatePassword);
+        //var clientCertificate = new X509Certificate2(config.ClientCertificate, config.ClientCertificatePassword);
         var creds = new ClientCertificateCredential(config.TenantId.ToString(), config.ClientId.ToString(), clientCertificate);
                 
         var boolMultiTenant = config.IsAdminPortalMultiTenant?.ToLower().Trim() ?? "false";
