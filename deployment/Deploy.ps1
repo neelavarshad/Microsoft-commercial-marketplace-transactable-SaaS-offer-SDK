@@ -320,7 +320,7 @@ if (!($ADApplicationID)) {
 		$CertPathPfx = Join-Path -Path $currentDirectory -ChildPath "cert.pfx"
 		$policy = New-AzKeyVaultCertificatePolicy -IssuerName "Self" -SubjectName "CN=$WebAppNamePrefix" -SecretContentType 'application/x-pkcs12' -ValidityInMonths (24)
 		$secureCertPassword = ConvertTo-SecureString -String $certPassword -AsPlainText -Force
-		Import-AzKeyVaultCertificate -VaultName $KeyVault -Name $certPfxFile -FilePath $CertPathPfx -Password $secureCertPassword -PolicyObject $policy
+		
 
 
 		#Required to save pfx in keyvault
@@ -569,6 +569,8 @@ az sql db create --resource-group $ResourceGroupForDeployment --server $SQLServe
 Write-host "   🔵 KeyVault"
 Write-host "      ➡️ Create KeyVault"
 az keyvault create --name $KeyVault --resource-group $ResourceGroupForDeployment --enable-rbac-authorization false --output $azCliOutput
+Write-host "      ➡️ Add Certificate"
+Import-AzKeyVaultCertificate -VaultName $KeyVault -Name $certPfxFile -FilePath $CertPathPfx -Password $secureCertPassword -PolicyObject $policy
 Write-host "      ➡️ Add Secrets"
 az keyvault secret set --vault-name $KeyVault --name ADApplicationSecret --value="$ADApplicationSecret" --output $azCliOutput
 az keyvault secret set --vault-name $KeyVault --name DefaultConnection --value $Connection --output $azCliOutput
