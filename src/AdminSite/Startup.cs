@@ -109,14 +109,15 @@ public class Startup
         //{
         //    throw new InvalidOperationException("Client certificate is required but not provided or could not be loaded.");
         //}
+        var creds;
         if (!string.IsNullOrEmpty(config.ClientCertificate) && !string.IsNullOrEmpty(config.ClientCertificatePassword))
         { 
             var clientCertificate = new X509Certificate2(config.ClientCertificate, config.ClientCertificatePassword);
-            var creds = new ClientCertificateCredential(config.TenantId.ToString(), config.ClientId.ToString(), clientCertificate);
+            creds = new ClientCertificateCredential(config.TenantId.ToString(), config.ClientId.ToString(), clientCertificate);
         }
         else
         {
-            var creds = new ClientSecretCredential(config.TenantId.ToString(), config.ClientId.ToString(), config.ClientSecret);
+            creds = new ClientSecretCredential(config.TenantId.ToString(), config.ClientId.ToString(), config.ClientSecret);
         }
         var boolMultiTenant = config.IsAdminPortalMultiTenant?.ToLower().Trim() ?? "false";
 
