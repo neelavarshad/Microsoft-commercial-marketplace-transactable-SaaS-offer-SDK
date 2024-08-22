@@ -32,6 +32,11 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.Marketplace.Metering;
 using Microsoft.Marketplace.SaaS;
+using Azure.Security.KeyVault.Secrets;
+using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
+using Marketplace.SaaS.Accelerator.Services.Helpers;
+
 
 namespace Marketplace.SaaS.Accelerator.AdminSite;
 
@@ -114,20 +119,15 @@ public class Startup
         System.Console.WriteLine($"Client Certificate thumbprint: {config.ClientCertificatePassword}");
 
         string keyVaultUrl = "https://cert-auth-test-kv.vault.azure.net/";
-        string certificateName = "cert.pfx";
+        string certificateName = "pfx-cert";
 
-        // Create a client to access the Key Vault
-        var client = new CertificateClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
+        var certHelper = new CertificateHelper(keyVaultUrl, certificateName, config.ClientCertificatePassword);
 
-        // Retrieve the certificate
-        KeyVaultCertificateWithPolicy certificateWithPolicy = client.GetCertificate(certificateName);
-        byte[] certificateBytes = certificateWithPolicy.Cer;
+        // Use the synchronous method to get the certificate
+        X509Certificate2 certificate = certHelper.GetCertificate();
 
-        // Create the X509Certificate2 object
-        X509Certificate2 certificate = new X509Certificate2(certificateBytes, config.ClientCertificatePassword);
-        //var clientCertificate = new X509Certificate2(config.ClientCertificate, config.ClientCertificatePassword);
         var creds = new ClientCertificateCredential(config.TenantId.ToString(), config.ClientId.ToString(), certificate);
-                
+
         var boolMultiTenant = config.IsAdminPortalMultiTenant?.ToLower().Trim() ?? "false";
 
 
