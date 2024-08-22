@@ -606,7 +606,7 @@ Write-host "📜 Deploy Code"
 
 Write-host "   🔵 Deploy Database"
 Write-host "      ➡️ Generate SQL schema/data script"
-Set-Content -Path ../src/AdminSite/appsettings.Development.json -value "{`"SaaSApiConfiguration`":{`"ClientCertificate`": `"$FulfillmentAppCertificate`", `"ClientCertificatePassword`": `"$FulfillmentAppCertificatePassword`"}, `"ConnectionStrings`": {`"DefaultConnection`":`"$Connection`"}}"
+Set-Content -Path ../src/AdminSite/appsettings.Development.json -value "{`"SaaSApiConfiguration`":{`"ClientCertificate`": `"$certPemFile`", `"ClientCertificatePassword`": `"$certPassword`"}, `"ConnectionStrings`": {`"DefaultConnection`":`"$Connection`"}}"
 dotnet-ef migrations script  --output script.sql --idempotent --context SaaSKitContext --project ../src/DataAccess/DataAccess.csproj --startup-project ../src/AdminSite/AdminSite.csproj
 Write-host "      ➡️ Execute SQL schema/data script"
 $dbaccesstoken = (Get-AzAccessToken -ResourceUrl https://database.windows.net).Token
