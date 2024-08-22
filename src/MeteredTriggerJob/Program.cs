@@ -8,6 +8,7 @@ using Marketplace.SaaS.Accelerator.DataAccess.Contracts;
 using Marketplace.SaaS.Accelerator.DataAccess.Services;
 using Marketplace.SaaS.Accelerator.Services.Configurations;
 using Marketplace.SaaS.Accelerator.Services.Contracts;
+using Marketplace.SaaS.Accelerator.Services.Helpers;
 using Marketplace.SaaS.Accelerator.Services.Services;
 using Marketplace.SaaS.Accelerator.Services.Utilities;
 using Microsoft.EntityFrameworkCore;
@@ -40,11 +41,19 @@ class Program
             GrantType = configuration["SaaSApiConfiguration:GrantType"],
             Resource = configuration["SaaSApiConfiguration:Resource"],
             TenantId = configuration["SaaSApiConfiguration:TenantId"],
+            KeyVault = configuration["SaaSApiConfiguration:KeyVault"],
             ClientCertificate = configuration["SaaSApiConfiguration:ClientCertificate"],
             ClientCertificatePassword = configuration["SaaSApiConfiguration:ClientCertificatePassword"]
         };
-        var clientCertificate = new X509Certificate2(config.ClientCertificate, config.ClientCertificatePassword);
-        var creds = new ClientCertificateCredential(config.TenantId.ToString(), config.ClientId.ToString(), clientCertificate);
+
+        string KeyVaultUrl = "https://" + config.KeyVault + ".vault.azure.net/";
+
+        var certHelper = new CertificateHelper(KeyVaultUrl, config.ClientCertificate, config.ClientCertificatePassword);
+
+        X509Certificate2 certificate = certHelper.GetCertificate();
+
+        var creds = new ClientCertificateCredential(config.TenantId.ToString(), config.ClientId.ToString(), certificate);
+
         var versionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
 
         var services = new ServiceCollection()

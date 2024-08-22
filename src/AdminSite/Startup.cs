@@ -79,6 +79,7 @@ public class Startup
             ClientSecret = this.Configuration["SaaSApiConfiguration:ClientSecret"] ?? String.Empty,
             FulFillmentAPIBaseURL = this.Configuration["SaaSApiConfiguration:FulFillmentAPIBaseURL"],
             MTClientId = this.Configuration["SaaSApiConfiguration:MTClientId"] ?? Guid.Empty.ToString(),
+            KeyVault = this.Configuration["SaaSApiConfiguration:KeyVault"] ?? String.Empty,
             ClientCertificate = this.Configuration["SaaSApiConfiguration:ClientCertificate"] ?? String.Empty,
             ClientCertificatePassword = this.Configuration["SaaSApiConfiguration:ClientCertificatePassword"] ?? String.Empty,
             FulFillmentAPIVersion = this.Configuration["SaaSApiConfiguration:FulFillmentAPIVersion"],
@@ -94,33 +95,10 @@ public class Startup
             KnownUsers = this.Configuration["KnownUsers"],
         };
 
-        //X509Certificate2 clientCertificate = null;
+        string KeyVaultUrl = "https://"+config.KeyVault+".vault.azure.net/";
+        
+        var certHelper = new CertificateHelper(KeyVaultUrl, config.ClientCertificate, config.ClientCertificatePassword);
 
-        //if (!string.IsNullOrEmpty(config.ClientCertificate))
-        //{
-        //    try
-        //    {
-        //        clientCertificate = new X509Certificate2(config.ClientCertificate, config.ClientCertificatePassword);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new InvalidOperationException("Failed to load the client certificate.", ex);
-        //    }
-        //}
-
-        //if (clientCertificate == null)
-        //{
-        //    throw new InvalidOperationException("Client certificate is required but not provided or could not be loaded.");
-        //}
-        System.Console.WriteLine($"Client Certificate: {config.ClientCertificate}");
-        System.Console.WriteLine($"Client Certificate thumbprint: {config.ClientCertificatePassword}");
-
-        string keyVaultUrl = "https://cert-auth-test-kv.vault.azure.net/";
-        string certificateName = "pfx-cert";
-
-        var certHelper = new CertificateHelper(keyVaultUrl, certificateName, config.ClientCertificatePassword);
-
-        // Use the synchronous method to get the certificate
         X509Certificate2 certificate = certHelper.GetCertificate();
 
         var creds = new ClientCertificateCredential(config.TenantId.ToString(), config.ClientId.ToString(), certificate);
