@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
+using Azure.Core;
 using Azure.Identity;
 using Marketplace.SaaS.Accelerator.AdminSite.Controllers;
 using Marketplace.SaaS.Accelerator.DataAccess.Context;
@@ -109,7 +110,7 @@ public class Startup
         //{
         //    throw new InvalidOperationException("Client certificate is required but not provided or could not be loaded.");
         //}
-        var creds;
+        TokenCredential creds = null;
         if (!string.IsNullOrEmpty(config.ClientCertificate) && !string.IsNullOrEmpty(config.ClientCertificatePassword))
         { 
             var clientCertificate = new X509Certificate2(config.ClientCertificate, config.ClientCertificatePassword);
