@@ -96,7 +96,8 @@ public class Startup
         };
 
         string KeyVaultUrl = "https://"+config.KeyVault+".vault.azure.net/";
-        
+        System.Console.WriteLine($"KeyVaultUrl: {KeyVaultUrl}");
+
         var certHelper = new CertificateHelper(KeyVaultUrl, config.ClientCertificate, config.ClientCertificatePassword);
 
         X509Certificate2 certificate = certHelper.GetCertificate();
