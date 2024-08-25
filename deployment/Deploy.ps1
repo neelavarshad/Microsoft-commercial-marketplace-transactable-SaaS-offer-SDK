@@ -573,12 +573,12 @@ Write-host "   🔵 KeyVault"
 Write-host "      ➡️ Create KeyVault"
 az keyvault create --name $KeyVault --resource-group $ResourceGroupForDeployment --enable-rbac-authorization false --output $azCliOutput
 Write-host "      ➡️ Add Certificate"
-Import-AzKeyVaultCertificate -VaultName $KeyVault -Name $CertificateName -FilePath $CertPathPfx -Password $certPassword -PolicyObject $policy
+Import-AzKeyVaultCertificate -VaultName $KeyVault -Name $CertificateName -FilePath $CertPathPfx -Password $secureCertPassword -PolicyObject $policy
 Write-host "      ➡️ Add Secrets"
 # az keyvault secret set --vault-name $KeyVault --name ADApplicationSecret --value="$ADApplicationSecret" --output $azCliOutput
 az keyvault secret set --vault-name $KeyVault --name DefaultConnection --value $Connection --output $azCliOutput
 # az keyvault secret set --vault-name $KeyVault --name "pfx-cert" --value $base64Value --output $azCliOutput
-az keyvault secret set --vault-name $KeyVault --name $CertificatePasswordName --value $certPassword --output $azCliOutput
+az keyvault secret set --vault-name $KeyVault --name $CertificatePasswordName --value $secureCertPassword --output $azCliOutput
 
 
 Write-host "   🔵 App Service Plan"
@@ -618,7 +618,7 @@ Write-host "   🔵 Deploy Database"
 Write-host "      ➡️ Generate SQL schema/data script"
 $CertPath = Split-Path -Parent $MyInvocation.MyCommand.Path
 Write-host "      ➡️ path:"+$CertPath
-Set-Content -Path ../src/AdminSite/appsettings.Development.json -value "{`"SaaSApiConfiguration`":{`"ClientCertificate`": `"$CertificateName`", `"ClientCertificatePassword`": `"$certPassword`", `"KeyVault`": `"$KeyVault`"}, `"ConnectionStrings`": {`"DefaultConnection`":`"$Connection`"}}"
+Set-Content -Path ../src/AdminSite/appsettings.Development.json -value "{`"SaaSApiConfiguration`":{`"ClientCertificate`": `"$CertificateName`", `"ClientCertificatePassword`": `"$secureCertPassword`", `"KeyVault`": `"$KeyVault`"}, `"ConnectionStrings`": {`"DefaultConnection`":`"$Connection`"}}"
 dotnet-ef migrations script  --output script.sql --idempotent --context SaaSKitContext --project ../src/DataAccess/DataAccess.csproj --startup-project ../src/AdminSite/AdminSite.csproj
 Write-host "      ➡️ Execute SQL schema/data script"
 $dbaccesstoken = (Get-AzAccessToken -ResourceUrl https://database.windows.net).Token
