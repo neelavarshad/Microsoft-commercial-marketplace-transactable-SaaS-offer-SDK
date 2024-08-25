@@ -12,28 +12,24 @@ using System.Security;
 namespace Marketplace.SaaS.Accelerator.Services.Helpers;
 public class CertificateHelper
 {
-    // private readonly SecretClient _secretClient;
-    private readonly CertificateClient _certificateClient;
+
     private readonly string _certificateName;
     private readonly string _certificatePassword;
+    private readonly SecretClient _secretClient;
 
     public CertificateHelper(string keyVaultUrl, string certificateName, string certificatePassword)
     {
-        //_secretClient = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
-        _certificateClient = new CertificateClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
+        _secretClient = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
         _certificateName = certificateName;
         _certificatePassword = certificatePassword;
     }
 
     public async Task<X509Certificate2> GetCertificateAsync()
     {
-        //KeyVaultSecret secret = await _secretClient.GetSecretAsync(_certificateName);
-        //byte[] certBytes = Convert.FromBase64String(secret.Value);
-
-        KeyVaultCertificateWithPolicy certificateWithPolicy = await _certificateClient.GetCertificateAsync(_certificateName);
-
-        // Create the X509Certificate2 object
-        X509Certificate2 certificate = new X509Certificate2(certificateWithPolicy.Cer, _certificatePassword, X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
+        
+        KeyVaultSecret secret = await _secretClient.GetSecretAsync(_certificateName); // This should be the PFX
+        byte[] certBytes = Convert.FromBase64String(secret.Value);
+        X509Certificate2 certificate = new X509Certificate2(certBytes, _certificatePassword);
 
         return certificate;
     }

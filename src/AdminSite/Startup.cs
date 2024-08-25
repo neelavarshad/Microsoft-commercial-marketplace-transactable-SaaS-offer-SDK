@@ -95,8 +95,8 @@ public class Startup
             KnownUsers = this.Configuration["KnownUsers"],
         };
 
-        string KeyVaultUrl = "https://"+config.KeyVault+".vault.azure.net/";
-        System.Console.WriteLine($"KeyVaultUrl: {KeyVaultUrl}");
+        string KeyVaultUrl = "https://" + config.KeyVault + ".vault.azure.net/";
+
 
         var certHelper = new CertificateHelper(KeyVaultUrl, config.ClientCertificate, config.ClientCertificatePassword);
 
