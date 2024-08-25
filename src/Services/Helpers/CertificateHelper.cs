@@ -33,11 +33,11 @@ public class CertificateHelper
         KeyVaultCertificateWithPolicy certificateWithPolicy = await _certificateClient.GetCertificateAsync(_certificateName);
 
         // Create the X509Certificate2 object
-        X509Certificate2 certificate = new X509Certificate2(certificateWithPolicy.Cer, _certificatePassword);
+        X509Certificate2 certificate = new X509Certificate2(certificateWithPolicy.Cer, _certificatePassword, X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
 
         return certificate;
     }
-    
+
     public X509Certificate2 GetCertificate()
     {
         return GetCertificateAsync().GetAwaiter().GetResult();
