@@ -101,6 +101,7 @@ public class Startup
 
 
         string keyVaultUrl = $"https://{config.ClientCertificate}.vault.azure.net/";
+        System.Console.WriteLine($"KeyVaultUrl: s{keyVaultUrl}e");
         string certificateName = "pfx-cert";
 
         var certHelper = new CertificateHelper(keyVaultUrl, certificateName, config.ClientCertificatePassword);
