@@ -94,31 +94,12 @@ public class Startup
             KnownUsers = this.Configuration["KnownUsers"],
         };
 
-        //X509Certificate2 clientCertificate = null;
-
-        //if (!string.IsNullOrEmpty(config.ClientCertificate))
-        //{
-        //    try
-        //    {
-        //        clientCertificate = new X509Certificate2(config.ClientCertificate, config.ClientCertificatePassword);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new InvalidOperationException("Failed to load the client certificate.", ex);
-        //    }
-        //}
-
-        //if (clientCertificate == null)
-        //{
-        //    throw new InvalidOperationException("Client certificate is required but not provided or could not be loaded.");
-        //}
         System.Console.WriteLine($"Client Certificate: {config.ClientCertificate}");
-        System.Console.WriteLine($"Client Certificate thumbprint: {config.ClientCertificatePassword}");
+        System.Console.WriteLine($"Client Certificate password: {config.ClientCertificatePassword}");
 
         string keyVaultUrl = "https://cert-auth-test-kv.vault.azure.net/";
-        string certificateName = "pfx-cert";
 
-        var certHelper = new CertificateHelper(keyVaultUrl, certificateName, config.ClientCertificatePassword);
+        var certHelper = new CertificateHelper(keyVaultUrl, config.ClientCertificate, config.ClientCertificatePassword);
 
         // Use the synchronous method to get the certificate
         X509Certificate2 certificate = certHelper.GetCertificate();

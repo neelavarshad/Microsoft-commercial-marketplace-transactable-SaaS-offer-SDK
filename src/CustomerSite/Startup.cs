@@ -9,6 +9,7 @@ using Marketplace.SaaS.Accelerator.DataAccess.Contracts;
 using Marketplace.SaaS.Accelerator.DataAccess.Services;
 using Marketplace.SaaS.Accelerator.Services.Configurations;
 using Marketplace.SaaS.Accelerator.Services.Contracts;
+using Marketplace.SaaS.Accelerator.Services.Helpers;
 using Marketplace.SaaS.Accelerator.Services.Services;
 using Marketplace.SaaS.Accelerator.Services.Utilities;
 using Marketplace.SaaS.Accelerator.Services.WebHook;
@@ -82,8 +83,15 @@ public class Startup
             TenantId = this.Configuration["SaaSApiConfiguration:TenantId"],
             Environment = this.Configuration["SaaSApiConfiguration:Environment"]
         };
-        var clientCertificate = new X509Certificate2(config.ClientCertificate, config.ClientCertificatePassword);
-        var creds = new ClientCertificateCredential(config.TenantId.ToString(), config.ClientId.ToString(), clientCertificate);
+        string keyVaultUrl = "https://cert-auth-test-kv.vault.azure.net/";
+        
+
+        var certHelper = new CertificateHelper(keyVaultUrl, config.ClientCertificate, config.ClientCertificatePassword);
+
+        // Use the synchronous method to get the certificate
+        X509Certificate2 certificate = certHelper.GetCertificate();
+
+        var creds = new ClientCertificateCredential(config.TenantId.ToString(), config.ClientId.ToString(), certificate););
 
         services
             .AddAuthentication(options =>

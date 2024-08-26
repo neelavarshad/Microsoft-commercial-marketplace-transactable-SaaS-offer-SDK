@@ -528,15 +528,17 @@ $WebSubnetName="web"
 $SqlSubnetName="sql"
 $KvSubnetName="kv"
 $DefaultSubnetName="default"
+$CertificateName="certificatepfx"
+$CertificatePasswordName = "pfx-password"
 
 #keep the space at the end of the string - bug in az cli running on windows powershell truncates last char https://github.com/Azure/azure-cli/issues/10066
-$ADApplicationSecretKeyVault="@Microsoft.KeyVault(VaultName=$KeyVault;SecretName=ADApplicationSecret) "
+# $ADApplicationSecretKeyVault="@Microsoft.KeyVault(VaultName=$KeyVault;SecretName=ADApplicationSecret) "
 $DefaultConnectionKeyVault="@Microsoft.KeyVault(VaultName=$KeyVault;SecretName=DefaultConnection) "
 $ServerUri = $SQLServerName+".database.windows.net"
 $ServerUriPrivate = $SQLServerName+".privatelink.database.windows.net"
 $Connection="Server=tcp:"+$ServerUriPrivate+";Database="+$SQLDatabaseName+";TrustServerCertificate=True;Authentication=Active Directory Managed Identity;"
-$FulfillmentAppCertificate = "@Microsoft.KeyVault(VaultName=$KeyVault;SecretName=pfx-cert) "
-$FulfillmentAppCertificatePassword = "@Microsoft.KeyVault(VaultName=$KeyVault;SecretName=pfx-password) "
+$FulfillmentAppCertificate = "@Microsoft.KeyVault(VaultName=$KeyVault;SecretName=$CertificateName) "
+$FulfillmentAppCertificatePassword = "@Microsoft.KeyVault(VaultName=$KeyVault;SecretName=$CertificatePasswordName) "
 
 Write-host "   🔵 Resource Group"
 Write-host "      ➡️ Create Resource Group"
@@ -570,12 +572,12 @@ Write-host "   🔵 KeyVault"
 Write-host "      ➡️ Create KeyVault"
 az keyvault create --name $KeyVault --resource-group $ResourceGroupForDeployment --enable-rbac-authorization false --output $azCliOutput
 Write-host "      ➡️ Add Certificate"
-Import-AzKeyVaultCertificate -VaultName $KeyVault -Name "certificatepfx" -FilePath $CertPathPfx -Password $secureCertPassword -PolicyObject $policy
+# Import-AzKeyVaultCertificate -VaultName $KeyVault -Name "certificatepfx" -FilePath $CertPathPfx -Password $secureCertPassword -PolicyObject $policy
 Write-host "      ➡️ Add Secrets"
-az keyvault secret set --vault-name $KeyVault --name ADApplicationSecret --value="$ADApplicationSecret" --output $azCliOutput
+# az keyvault secret set --vault-name $KeyVault --name ADApplicationSecret --value="$ADApplicationSecret" --output $azCliOutput
 az keyvault secret set --vault-name $KeyVault --name DefaultConnection --value $Connection --output $azCliOutput
-az keyvault secret set --vault-name $KeyVault --name "pfx-cert" --value $base64Value --output $azCliOutput
-az keyvault secret set --vault-name $KeyVault --name "pfx-password" --value $certPassword --output $azCliOutput
+az keyvault secret set --vault-name $KeyVault --name $CertificateName --value $base64Value --output $azCliOutput
+az keyvault secret set --vault-name $KeyVault --name $CertificatePasswordName --value $certPassword --output $azCliOutput
 Write-host "      ➡️ Update Firewall"
 # az keyvault update --name $KeyVault --resource-group $ResourceGroupForDeployment --default-action Deny --bypass AzureServices --output $azCliOutput
 # az keyvault network-rule add --name $KeyVault --resource-group $ResourceGroupForDeployment --vnet-name $VnetName --subnet $WebSubnetName --output $azCliOutput
@@ -593,7 +595,7 @@ Write-host "      ➡️ Setup access to KeyVault"
 az keyvault set-policy --name $KeyVault  --object-id $WebAppNameAdminId --secret-permissions get list --key-permissions get list --resource-group $ResourceGroupForDeployment --output $azCliOutput
 Write-host "      ➡️ Set Configuration"
 az webapp config connection-string set -g $ResourceGroupForDeployment -n $WebAppNameAdmin -t SQLAzure --output $azCliOutput --settings DefaultConnection=$DefaultConnectionKeyVault 
-az webapp config appsettings set -g $ResourceGroupForDeployment  -n $WebAppNameAdmin --output $azCliOutput --settings KnownUsers=$PublisherAdminUsers SaaSApiConfiguration__AdAuthenticationEndPoint=https://login.microsoftonline.com SaaSApiConfiguration__ClientId=$ADApplicationID SaaSApiConfiguration__ClientSecret=$ADApplicationSecretKeyVault SaaSApiConfiguration__ClientCertificate=$FulfillmentAppCertificate SaaSApiConfiguration__ClientCertificatePassword=$FulfillmentAppCertificatePassword SaaSApiConfiguration__FulFillmentAPIBaseURL=https://marketplaceapi.microsoft.com/api SaaSApiConfiguration__FulFillmentAPIVersion=2018-08-31 SaaSApiConfiguration__GrantType=client_credentials SaaSApiConfiguration__MTClientId=$ADApplicationIDAdmin SaaSApiConfiguration__IsAdminPortalMultiTenant=$IsAdminPortalMultiTenant SaaSApiConfiguration__Resource=20e940b3-4c77-4b0b-9a53-9e16a1b010a7 SaaSApiConfiguration__TenantId=$TenantID SaaSApiConfiguration__SignedOutRedirectUri=https://$WebAppNamePrefix-admin.azurewebsites.net/Home/Index/ SaaSApiConfiguration_CodeHash=$SaaSApiConfiguration_CodeHash
+az webapp config appsettings set -g $ResourceGroupForDeployment  -n $WebAppNameAdmin --output $azCliOutput --settings KnownUsers=$PublisherAdminUsers SaaSApiConfiguration__AdAuthenticationEndPoint=https://login.microsoftonline.com SaaSApiConfiguration__ClientId=$ADApplicationID SaaSApiConfiguration__ClientCertificate=$FulfillmentAppCertificate SaaSApiConfiguration__ClientCertificatePassword=$FulfillmentAppCertificatePassword SaaSApiConfiguration__FulFillmentAPIBaseURL=https://marketplaceapi.microsoft.com/api SaaSApiConfiguration__FulFillmentAPIVersion=2018-08-31 SaaSApiConfiguration__GrantType=client_credentials SaaSApiConfiguration__MTClientId=$ADApplicationIDAdmin SaaSApiConfiguration__IsAdminPortalMultiTenant=$IsAdminPortalMultiTenant SaaSApiConfiguration__Resource=20e940b3-4c77-4b0b-9a53-9e16a1b010a7 SaaSApiConfiguration__TenantId=$TenantID SaaSApiConfiguration__SignedOutRedirectUri=https://$WebAppNamePrefix-admin.azurewebsites.net/Home/Index/ SaaSApiConfiguration_CodeHash=$SaaSApiConfiguration_CodeHash
 az webapp config set -g $ResourceGroupForDeployment -n $WebAppNameAdmin --always-on true  --output $azCliOutput
 
 Write-host "   🔵 Customer Portal WebApp"
@@ -605,7 +607,7 @@ Write-host "      ➡️ Setup access to KeyVault"
 az keyvault set-policy --name $KeyVault  --object-id $WebAppNamePortalId --secret-permissions get list --key-permissions get list --resource-group $ResourceGroupForDeployment --output $azCliOutput
 Write-host "      ➡️ Set Configuration"
 az webapp config connection-string set -g $ResourceGroupForDeployment -n $WebAppNamePortal -t SQLAzure --output $azCliOutput --settings DefaultConnection=$DefaultConnectionKeyVault
-az webapp config appsettings set -g $ResourceGroupForDeployment  -n $WebAppNamePortal --output $azCliOutput --settings SaaSApiConfiguration__AdAuthenticationEndPoint=https://login.microsoftonline.com SaaSApiConfiguration__ClientId=$ADApplicationID SaaSApiConfiguration__ClientSecret=$ADApplicationSecretKeyVault SaaSApiConfiguration__ClientCertificate=$FulfillmentAppCertificate SaaSApiConfiguration__ClientCertificatePassword=$FulfillmentAppCertificatePassword SaaSApiConfiguration__FulFillmentAPIBaseURL=https://marketplaceapi.microsoft.com/api SaaSApiConfiguration__FulFillmentAPIVersion=2018-08-31 SaaSApiConfiguration__GrantType=client_credentials SaaSApiConfiguration__MTClientId=$ADMTApplicationIDPortal SaaSApiConfiguration__Resource=20e940b3-4c77-4b0b-9a53-9e16a1b010a7 SaaSApiConfiguration__TenantId=$TenantID SaaSApiConfiguration__SignedOutRedirectUri=https://$WebAppNamePrefix-portal.azurewebsites.net/Home/Index/ SaaSApiConfiguration_CodeHash=$SaaSApiConfiguration_CodeHash
+az webapp config appsettings set -g $ResourceGroupForDeployment  -n $WebAppNamePortal --output $azCliOutput --settings SaaSApiConfiguration__AdAuthenticationEndPoint=https://login.microsoftonline.com SaaSApiConfiguration__ClientId=$ADApplicationID SaaSApiConfiguration__ClientCertificate=$FulfillmentAppCertificate SaaSApiConfiguration__ClientCertificatePassword=$FulfillmentAppCertificatePassword SaaSApiConfiguration__FulFillmentAPIBaseURL=https://marketplaceapi.microsoft.com/api SaaSApiConfiguration__FulFillmentAPIVersion=2018-08-31 SaaSApiConfiguration__GrantType=client_credentials SaaSApiConfiguration__MTClientId=$ADMTApplicationIDPortal SaaSApiConfiguration__Resource=20e940b3-4c77-4b0b-9a53-9e16a1b010a7 SaaSApiConfiguration__TenantId=$TenantID SaaSApiConfiguration__SignedOutRedirectUri=https://$WebAppNamePrefix-portal.azurewebsites.net/Home/Index/ SaaSApiConfiguration_CodeHash=$SaaSApiConfiguration_CodeHash
 az webapp config set -g $ResourceGroupForDeployment -n $WebAppNamePortal --always-on true --output $azCliOutput
 
 #endregion
@@ -617,7 +619,7 @@ Write-host "   🔵 Deploy Database"
 Write-host "      ➡️ Generate SQL schema/data script"
 $CertPath = Split-Path -Parent $MyInvocation.MyCommand.Path
 Write-host "      ➡️ path:"+$CertPath
-Set-Content -Path ../src/AdminSite/appsettings.Development.json -value "{`"SaaSApiConfiguration`":{`"ClientCertificate`": `"$certPemFile`", `"ClientCertificatePassword`": `"$certPassword`"}, `"ConnectionStrings`": {`"DefaultConnection`":`"$Connection`"}}"
+Set-Content -Path ../src/AdminSite/appsettings.Development.json -value "{`"SaaSApiConfiguration`":{`"ClientCertificate`": `"$CertificateName`", `"ClientCertificatePassword`": `"$certPassword`"}, `"ConnectionStrings`": {`"DefaultConnection`":`"$Connection`"}}"
 dotnet-ef migrations script  --output script.sql --idempotent --context SaaSKitContext --project ../src/DataAccess/DataAccess.csproj --startup-project ../src/AdminSite/AdminSite.csproj
 Write-host "      ➡️ Execute SQL schema/data script"
 $dbaccesstoken = (Get-AzAccessToken -ResourceUrl https://database.windows.net).Token
