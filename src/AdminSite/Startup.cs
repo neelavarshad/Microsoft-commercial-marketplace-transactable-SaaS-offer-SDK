@@ -33,6 +33,7 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.Marketplace.Metering;
 using Microsoft.Marketplace.SaaS;
 using Marketplace.SaaS.Accelerator.Services.Helpers;
+using System.Text.RegularExpressions;
 
 
 namespace Marketplace.SaaS.Accelerator.AdminSite;
@@ -97,9 +98,17 @@ public class Startup
         System.Console.WriteLine($"Client Certificate: {config.ClientCertificate}");
         System.Console.WriteLine($"Client Certificate password: {config.ClientCertificatePassword}");
 
+        
+
+        // Extract SecretName for the certificate
+        string certificateSecretName = CertificateHelper.ExtractSecretName(config.ClientCertificate);
+
+        // Extract SecretName for the certificate password
+        string certificatePasswordSecretName = CertificateHelper.ExtractSecretName(config.ClientCertificatePassword);
+
         string keyVaultUrl = "https://cert-auth-test-kv.vault.azure.net/";
 
-        var certHelper = new CertificateHelper(keyVaultUrl, config.ClientCertificate, config.ClientCertificatePassword);
+        var certHelper = new CertificateHelper(keyVaultUrl, certificateSecretName, certificatePasswordSecretName);
 
         // Use the synchronous method to get the certificate
         X509Certificate2 certificate = certHelper.GetCertificate();

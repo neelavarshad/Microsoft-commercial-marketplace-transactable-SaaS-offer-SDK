@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
@@ -31,6 +32,13 @@ public class CertificateHelper
     public X509Certificate2 GetCertificate()
     {
         return GetCertificateAsync().GetAwaiter().GetResult();
+    }
+
+    public static string ExtractSecretName(string input)
+    {
+        string pattern = @"SecretName=([^;)]+)";
+        Match match = Regex.Match(input, pattern);
+        return match.Success ? match.Groups[1].Value : string.Empty;
     }
 
 }
