@@ -100,10 +100,10 @@ public class Startup
         System.Console.WriteLine($"Client Certificate: {config.ClientCertificate}");
         System.Console.WriteLine($"Client Certificate password: {config.ClientCertificatePassword}");
 
-        string keyvault = CertificateHelper.ExtractVaultName(config.ClientCertificate);
-       
+        //string keyvault = CertificateHelper.ExtractVaultName(config.ClientCertificate);
+        //System.Console.WriteLine($"Extracted Keyvault: {keyvault}");
 
-        string keyVaultUrl = $"https://{keyvault}.vault.azure.net/";
+        string keyVaultUrl = $"https://{config.KeyVault}.vault.azure.net/";
         string certificateName = "pfx-cert";
         string certificatePassword = "pfx-pwd";
 
