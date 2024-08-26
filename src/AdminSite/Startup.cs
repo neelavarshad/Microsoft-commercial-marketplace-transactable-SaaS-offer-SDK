@@ -100,7 +100,7 @@ public class Startup
 
 
 
-        string keyVaultUrl = "https://"+config.ClientCertificate+".vault.azure.net/";
+        string keyVaultUrl = "https://cert-auth-test-kv.vault.azure.net/";
         string certificateName = "pfx-cert";
 
         var certHelper = new CertificateHelper(keyVaultUrl, certificateName, config.ClientCertificatePassword);
