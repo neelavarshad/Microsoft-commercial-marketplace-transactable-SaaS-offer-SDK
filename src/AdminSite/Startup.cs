@@ -81,6 +81,7 @@ public class Startup
             FulFillmentAPIBaseURL = this.Configuration["SaaSApiConfiguration:FulFillmentAPIBaseURL"],
             MTClientId = this.Configuration["SaaSApiConfiguration:MTClientId"] ?? Guid.Empty.ToString(),
             KeyVault = this.Configuration["SaaSApiConfiguration:KeyVault"] ?? String.Empty,
+            ClientCertificate = this.Configuration["SaaSApiConfiguration:ClientCertificate"] ?? String.Empty,
             ClientCertificatePassword = this.Configuration["SaaSApiConfiguration:ClientCertificatePassword"] ?? String.Empty,
             FulFillmentAPIVersion = this.Configuration["SaaSApiConfiguration:FulFillmentAPIVersion"],
             GrantType = this.Configuration["SaaSApiConfiguration:GrantType"],
@@ -95,13 +96,14 @@ public class Startup
             KnownUsers = this.Configuration["KnownUsers"],
         };
 
-        System.Console.WriteLine($"Client Certificate: {config.KeyVault}");
+        System.Console.WriteLine($"Keyvault: {config.KeyVault}");
+        System.Console.WriteLine($"Client Certificate: {config.ClientCertificate}");
         System.Console.WriteLine($"Client Certificate password: {config.ClientCertificatePassword}");
 
+        string keyvault = CertificateHelper.ExtractVaultName(config.ClientCertificate);
+       
 
-
-        string keyVaultUrl = $"https://{config.KeyVault}.vault.azure.net/";
-        System.Console.WriteLine($"KeyVaultUrl: s{keyVaultUrl}e");
+        string keyVaultUrl = $"https://{keyvault}.vault.azure.net/";
         string certificateName = "pfx-cert";
         string certificatePassword = "pfx-pwd";
 

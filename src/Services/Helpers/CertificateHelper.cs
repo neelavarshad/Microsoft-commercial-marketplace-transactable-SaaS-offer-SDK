@@ -26,9 +26,11 @@ public class CertificateHelper
     {
         KeyVaultSecret secret = await _secretClient.GetSecretAsync(_certificateName);
         byte[] certBytes = Convert.FromBase64String(secret.Value);
-        KeyVaultSecret passwordSecret =  _secretClient.GetSecret(_certificatePassword);
-        string password = passwordSecret.Value;
-        return new X509Certificate2(certBytes, password);
+
+        KeyVaultSecret passwordSecret = await _secretClient.GetSecretAsync(_certificatePassword);
+        string certpassword = passwordSecret.Value;
+
+        return new X509Certificate2(certBytes, certpassword);
 
     }
 
@@ -41,6 +43,14 @@ public class CertificateHelper
     {
         System.Console.WriteLine($"Extracting secret name from input: {input}");
         string pattern = @"SecretName=([^;)]+)";
+        Match match = Regex.Match(input, pattern);
+        return match.Success ? match.Groups[1].Value : string.Empty;
+    }
+
+    public static string ExtractVaultName(string input)
+    {
+        System.Console.WriteLine($"Extracting vault name from input: {input}");
+        string pattern = @"VaultName=([^;)]+)";
         Match match = Regex.Match(input, pattern);
         return match.Success ? match.Groups[1].Value : string.Empty;
     }

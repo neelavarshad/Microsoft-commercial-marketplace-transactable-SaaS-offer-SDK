@@ -73,6 +73,7 @@ public class Startup
             ClientSecret = this.Configuration["SaaSApiConfiguration:ClientSecret"],
             MTClientId = this.Configuration["SaaSApiConfiguration:MTClientId"],
             KeyVault = this.Configuration["SaaSApiConfiguration:KeyVault"],
+            ClientCertificate = this.Configuration["SaaSApiConfiguration:ClientCertificate"],
             ClientCertificatePassword = this.Configuration["SaaSApiConfiguration:ClientCertificatePassword"],
             FulFillmentAPIBaseURL = this.Configuration["SaaSApiConfiguration:FulFillmentAPIBaseURL"],
             FulFillmentAPIVersion = this.Configuration["SaaSApiConfiguration:FulFillmentAPIVersion"],
@@ -89,7 +90,7 @@ public class Startup
         string certificatePassword = "pfx-pwd";
 
         var certHelper = new CertificateHelper(keyVaultUrl, certificateName, certificatePassword);
-        
+
 
         // Use the synchronous method to get the certificate
         X509Certificate2 certificate = certHelper.GetCertificate();
