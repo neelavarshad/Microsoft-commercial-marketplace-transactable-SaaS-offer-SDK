@@ -44,7 +44,7 @@ class Program
             ClientCertificate = configuration["SaaSApiConfiguration:ClientCertificate"],
             ClientCertificatePassword = configuration["SaaSApiConfiguration:ClientCertificatePassword"]
         };
-        string keyVaultUrl = "https://cert-auth-test-kv.vault.azure.net/";
+        string keyVaultUrl = $"https://{config.ClientCertificate}.vault.azure.net/";
         string certificatename = "pfx-cert";
 
         var certHelper = new CertificateHelper(keyVaultUrl, certificatename, config.ClientCertificatePassword);

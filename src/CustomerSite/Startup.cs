@@ -83,7 +83,7 @@ public class Startup
             TenantId = this.Configuration["SaaSApiConfiguration:TenantId"],
             Environment = this.Configuration["SaaSApiConfiguration:Environment"]
         };
-        string keyVaultUrl = "https://"+config.ClientCertificate+".vault.azure.net/";
+        string keyVaultUrl = $"https://{config.ClientCertificate}.vault.azure.net/";
 
         string certificatename = "pfx-cert";
         var certHelper = new CertificateHelper(keyVaultUrl, certificatename, config.ClientCertificatePassword);
