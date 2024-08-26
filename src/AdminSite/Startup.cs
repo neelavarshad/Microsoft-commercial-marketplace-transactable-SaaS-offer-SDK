@@ -80,7 +80,7 @@ public class Startup
             ClientSecret = this.Configuration["SaaSApiConfiguration:ClientSecret"] ?? String.Empty,
             FulFillmentAPIBaseURL = this.Configuration["SaaSApiConfiguration:FulFillmentAPIBaseURL"],
             MTClientId = this.Configuration["SaaSApiConfiguration:MTClientId"] ?? Guid.Empty.ToString(),
-            KeyVault = this.Configuration["SaaSApiConfiguration:ClientCertificate"] ?? String.Empty,
+            KeyVault = this.Configuration["SaaSApiConfiguration:KeyVault"] ?? String.Empty,
             ClientCertificatePassword = this.Configuration["SaaSApiConfiguration:ClientCertificatePassword"] ?? String.Empty,
             FulFillmentAPIVersion = this.Configuration["SaaSApiConfiguration:FulFillmentAPIVersion"],
             GrantType = this.Configuration["SaaSApiConfiguration:GrantType"],
