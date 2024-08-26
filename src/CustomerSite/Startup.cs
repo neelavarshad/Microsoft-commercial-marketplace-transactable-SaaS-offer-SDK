@@ -91,7 +91,7 @@ public class Startup
         // Use the synchronous method to get the certificate
         X509Certificate2 certificate = certHelper.GetCertificate();
 
-        var creds = new ClientCertificateCredential(config.TenantId.ToString(), config.ClientId.ToString(), certificate););
+        var creds = new ClientCertificateCredential(config.TenantId.ToString(), config.ClientId.ToString(), certificate);
 
         services
             .AddAuthentication(options =>
