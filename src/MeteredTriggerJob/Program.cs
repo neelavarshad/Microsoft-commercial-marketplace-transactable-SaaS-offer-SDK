@@ -44,9 +44,10 @@ class Program
             ClientCertificate = configuration["SaaSApiConfiguration:ClientCertificate"],
             ClientCertificatePassword = configuration["SaaSApiConfiguration:ClientCertificatePassword"]
         };
-        string keyVaultUrl = "https://cert-auth-test-kv.vault.azure.net/";
+        string keyVaultUrl = "https://"+config.ClientCertificate+".vault.azure.net/";
+        string certificatename = "pfx-cert";
 
-        var certHelper = new CertificateHelper(keyVaultUrl, config.ClientCertificate.ToString(), config.ClientCertificatePassword);
+        var certHelper = new CertificateHelper(keyVaultUrl, certificatename, config.ClientCertificatePassword);
 
         // Use the synchronous method to get the certificate
         X509Certificate2 certificate = certHelper.GetCertificate();

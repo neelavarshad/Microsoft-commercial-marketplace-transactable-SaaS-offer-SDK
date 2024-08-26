@@ -100,9 +100,10 @@ public class Startup
 
 
 
-        string keyVaultUrl = "https://cert-auth-test-kv.vault.azure.net/";
+        string keyVaultUrl = "https://"+config.ClientCertificate+".vault.azure.net/";
+        string certificateName = "pfx-cert";
 
-        var certHelper = new CertificateHelper(keyVaultUrl, config.ClientCertificate.ToString(), config.ClientCertificatePassword);
+        var certHelper = new CertificateHelper(keyVaultUrl, certificateName, config.ClientCertificatePassword);
 
         // Use the synchronous method to get the certificate
         X509Certificate2 certificate = certHelper.GetCertificate();

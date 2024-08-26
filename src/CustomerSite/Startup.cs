@@ -83,10 +83,10 @@ public class Startup
             TenantId = this.Configuration["SaaSApiConfiguration:TenantId"],
             Environment = this.Configuration["SaaSApiConfiguration:Environment"]
         };
-        string keyVaultUrl = "https://cert-auth-test-kv.vault.azure.net/";
-        
+        string keyVaultUrl = "https://"+config.ClientCertificate+".vault.azure.net/";
 
-        var certHelper = new CertificateHelper(keyVaultUrl, config.ClientCertificate.ToString(), config.ClientCertificatePassword);
+        string certificatename = "pfx-cert";
+        var certHelper = new CertificateHelper(keyVaultUrl, certificatename, config.ClientCertificatePassword);
 
         // Use the synchronous method to get the certificate
         X509Certificate2 certificate = certHelper.GetCertificate();
