@@ -537,8 +537,8 @@ $DefaultConnectionKeyVault="@Microsoft.KeyVault(VaultName=$KeyVault;SecretName=D
 $ServerUri = $SQLServerName+".database.windows.net"
 $ServerUriPrivate = $SQLServerName+".privatelink.database.windows.net"
 $Connection="Server=tcp:"+$ServerUriPrivate+";Database="+$SQLDatabaseName+";TrustServerCertificate=True;Authentication=Active Directory Managed Identity;"
-$FulfillmentAppCertificate = "@Microsoft.KeyVault(VaultName=$KeyVault;SecretName=$CertificateName) "
-$FulfillmentAppCertificatePassword = "@Microsoft.KeyVault(VaultName=$KeyVault;SecretName=$CertificatePasswordName) "
+$FulfillmentAppCertificate = "@Microsoft.KeyVault(VaultName=$KeyVault;SecretName=Certificatepfx) "
+$FulfillmentAppCertificatePassword = "@Microsoft.KeyVault(VaultName=$KeyVault;SecretName=Certificatepwd) "
 
 Write-host "   🔵 Resource Group"
 Write-host "      ➡️ Create Resource Group"
@@ -576,8 +576,8 @@ Write-host "      ➡️ Add Certificate"
 Write-host "      ➡️ Add Secrets"
 # az keyvault secret set --vault-name $KeyVault --name ADApplicationSecret --value="$ADApplicationSecret" --output $azCliOutput
 az keyvault secret set --vault-name $KeyVault --name DefaultConnection --value $Connection --output $azCliOutput
-az keyvault secret set --vault-name $KeyVault --name $CertificateName --value $base64Value --output $azCliOutput
-az keyvault secret set --vault-name $KeyVault --name $CertificatePasswordName --value $certPassword --output $azCliOutput
+az keyvault secret set --vault-name $KeyVault --name "Certificatepfx" --value $base64Value --output $azCliOutput
+az keyvault secret set --vault-name $KeyVault --name "Certificatepwd" --value $certPassword --output $azCliOutput
 Write-host "      ➡️ Update Firewall"
 # az keyvault update --name $KeyVault --resource-group $ResourceGroupForDeployment --default-action Deny --bypass AzureServices --output $azCliOutput
 # az keyvault network-rule add --name $KeyVault --resource-group $ResourceGroupForDeployment --vnet-name $VnetName --subnet $WebSubnetName --output $azCliOutput
