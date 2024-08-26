@@ -26,7 +26,10 @@ public class CertificateHelper
     {
         KeyVaultSecret secret = await _secretClient.GetSecretAsync(_certificateName);
         byte[] certBytes = Convert.FromBase64String(secret.Value);
-        return new X509Certificate2(certBytes, _certificatePassword);
+        KeyVaultSecret keyVaultSecret = _secretClient.GetSecret(_certificatePassword);
+        string certificatepassword = secret.Value;
+
+        return new X509Certificate2(certBytes, certificatepassword);
     }
 
     public X509Certificate2 GetCertificate()
