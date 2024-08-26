@@ -86,7 +86,7 @@ public class Startup
         string keyVaultUrl = "https://cert-auth-test-kv.vault.azure.net/";
         
 
-        var certHelper = new CertificateHelper(keyVaultUrl, config.ClientCertificate, config.ClientCertificatePassword);
+        var certHelper = new CertificateHelper(keyVaultUrl, config.ClientCertificate.ToString(), config.ClientCertificatePassword);
 
         // Use the synchronous method to get the certificate
         X509Certificate2 certificate = certHelper.GetCertificate();

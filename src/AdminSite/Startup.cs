@@ -98,19 +98,11 @@ public class Startup
         System.Console.WriteLine($"Client Certificate: {config.ClientCertificate}");
         System.Console.WriteLine($"Client Certificate password: {config.ClientCertificatePassword}");
 
-        
 
-        // Extract SecretName for the certificate
-        string certificateSecretName = CertificateHelper.ExtractSecretName(config.ClientCertificate);
 
-        // Extract SecretName for the certificate password
-        string certificatePasswordSecretName = CertificateHelper.ExtractSecretName(config.ClientCertificatePassword);
-
-        System.Console.WriteLine($"Certificate Secret Name: {certificateSecretName}");
-        System.Console.WriteLine($"Certificate Password Secret Name: {certificatePasswordSecretName}");
         string keyVaultUrl = "https://cert-auth-test-kv.vault.azure.net/";
 
-        var certHelper = new CertificateHelper(keyVaultUrl, certificateSecretName, certificatePasswordSecretName);
+        var certHelper = new CertificateHelper(keyVaultUrl, config.ClientCertificate.ToString(), config.ClientCertificatePassword);
 
         // Use the synchronous method to get the certificate
         X509Certificate2 certificate = certHelper.GetCertificate();

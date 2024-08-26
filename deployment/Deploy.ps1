@@ -528,7 +528,7 @@ $WebSubnetName="web"
 $SqlSubnetName="sql"
 $KvSubnetName="kv"
 $DefaultSubnetName="default"
-$CertificateName="certificatepfx"
+$CertificateName="pfx-cert"
 $CertificatePasswordName = "pfx-password"
 
 #keep the space at the end of the string - bug in az cli running on windows powershell truncates last char https://github.com/Azure/azure-cli/issues/10066
@@ -537,8 +537,8 @@ $DefaultConnectionKeyVault="@Microsoft.KeyVault(VaultName=$KeyVault;SecretName=D
 $ServerUri = $SQLServerName+".database.windows.net"
 $ServerUriPrivate = $SQLServerName+".privatelink.database.windows.net"
 $Connection="Server=tcp:"+$ServerUriPrivate+";Database="+$SQLDatabaseName+";TrustServerCertificate=True;Authentication=Active Directory Managed Identity;"
-$FulfillmentAppCertificate = "@Microsoft.KeyVault(VaultName=$KeyVault;SecretName=Certificatepfx) "
-$FulfillmentAppCertificatePassword = "@Microsoft.KeyVault(VaultName=$KeyVault;SecretName=Certificatepwd) "
+$FulfillmentAppCertificate = "@Microsoft.KeyVault(VaultName=$KeyVault;SecretName=pfx-cert) "
+$FulfillmentAppCertificatePassword = "@Microsoft.KeyVault(VaultName=$KeyVault;SecretName=pfx-pwd) "
 
 Write-host "   🔵 Resource Group"
 Write-host "      ➡️ Create Resource Group"
@@ -576,8 +576,8 @@ Write-host "      ➡️ Add Certificate"
 Write-host "      ➡️ Add Secrets"
 # az keyvault secret set --vault-name $KeyVault --name ADApplicationSecret --value="$ADApplicationSecret" --output $azCliOutput
 az keyvault secret set --vault-name $KeyVault --name DefaultConnection --value $Connection --output $azCliOutput
-az keyvault secret set --vault-name $KeyVault --name "Certificatepfx" --value $base64Value --output $azCliOutput
-az keyvault secret set --vault-name $KeyVault --name "Certificatepwd" --value $certPassword --output $azCliOutput
+az keyvault secret set --vault-name $KeyVault --name "pfx-cert" --value $base64Value --output $azCliOutput
+az keyvault secret set --vault-name $KeyVault --name "pfx-pwd" --value $certPassword --output $azCliOutput
 Write-host "      ➡️ Update Firewall"
 # az keyvault update --name $KeyVault --resource-group $ResourceGroupForDeployment --default-action Deny --bypass AzureServices --output $azCliOutput
 # az keyvault network-rule add --name $KeyVault --resource-group $ResourceGroupForDeployment --vnet-name $VnetName --subnet $WebSubnetName --output $azCliOutput
@@ -619,7 +619,7 @@ Write-host "   🔵 Deploy Database"
 Write-host "      ➡️ Generate SQL schema/data script"
 $CertPath = Split-Path -Parent $MyInvocation.MyCommand.Path
 Write-host "      ➡️ path:"+$CertPath
-Set-Content -Path ../src/AdminSite/appsettings.Development.json -value "{`"SaaSApiConfiguration`":{`"ClientCertificate`": `"$FulfillmentAppCertificate`", `"ClientCertificatePassword`": `"$FulfillmentAppCertificatePassword`"}, `"ConnectionStrings`": {`"DefaultConnection`":`"$Connection`"}}"
+Set-Content -Path ../src/AdminSite/appsettings.Development.json -value "{`"SaaSApiConfiguration`":{`"ClientCertificate`": `"$CertificateName`", `"ClientCertificatePassword`": `"$certPassword`"}, `"ConnectionStrings`": {`"DefaultConnection`":`"$Connection`"}}"
 dotnet-ef migrations script  --output script.sql --idempotent --context SaaSKitContext --project ../src/DataAccess/DataAccess.csproj --startup-project ../src/AdminSite/AdminSite.csproj
 Write-host "      ➡️ Execute SQL schema/data script"
 $dbaccesstoken = (Get-AzAccessToken -ResourceUrl https://database.windows.net).Token
