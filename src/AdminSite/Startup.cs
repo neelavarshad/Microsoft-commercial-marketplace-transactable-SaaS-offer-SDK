@@ -106,6 +106,8 @@ public class Startup
         // Extract SecretName for the certificate password
         string certificatePasswordSecretName = CertificateHelper.ExtractSecretName(config.ClientCertificatePassword);
 
+        System.Console.WriteLine($"Certificate Secret Name: {certificateSecretName}");
+        System.Console.WriteLine($"Certificate Password Secret Name: {certificatePasswordSecretName}");
         string keyVaultUrl = "https://cert-auth-test-kv.vault.azure.net/";
 
         var certHelper = new CertificateHelper(keyVaultUrl, certificateSecretName, certificatePasswordSecretName);
