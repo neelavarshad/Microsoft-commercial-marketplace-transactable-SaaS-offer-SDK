@@ -41,13 +41,14 @@ class Program
             GrantType = configuration["SaaSApiConfiguration:GrantType"],
             Resource = configuration["SaaSApiConfiguration:Resource"],
             TenantId = configuration["SaaSApiConfiguration:TenantId"],
-            ClientCertificate = configuration["SaaSApiConfiguration:ClientCertificate"],
+            KeyVault = configuration["SaaSApiConfiguration:ClientCertificate"],
             ClientCertificatePassword = configuration["SaaSApiConfiguration:ClientCertificatePassword"]
         };
-        string keyVaultUrl = $"https://{config.ClientCertificate}.vault.azure.net/";
-        string certificatename = "pfx-cert";
+        string keyVaultUrl = $"https://{config.KeyVault}.vault.azure.net/";
+        string certificateName = "pfx-cert";
+        string certificatePassword = "pfx-pwd";
 
-        var certHelper = new CertificateHelper(keyVaultUrl, certificatename, config.ClientCertificatePassword);
+        var certHelper = new CertificateHelper(keyVaultUrl, certificateName, certificatePassword);
 
         // Use the synchronous method to get the certificate
         X509Certificate2 certificate = certHelper.GetCertificate();

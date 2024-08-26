@@ -72,7 +72,7 @@ public class Startup
             ClientId = this.Configuration["SaaSApiConfiguration:ClientId"],
             ClientSecret = this.Configuration["SaaSApiConfiguration:ClientSecret"],
             MTClientId = this.Configuration["SaaSApiConfiguration:MTClientId"],
-            ClientCertificate = this.Configuration["SaaSApiConfiguration:ClientCertificate"],
+            KeyVault = this.Configuration["SaaSApiConfiguration:ClientCertificate"],
             ClientCertificatePassword = this.Configuration["SaaSApiConfiguration:ClientCertificatePassword"],
             FulFillmentAPIBaseURL = this.Configuration["SaaSApiConfiguration:FulFillmentAPIBaseURL"],
             FulFillmentAPIVersion = this.Configuration["SaaSApiConfiguration:FulFillmentAPIVersion"],
@@ -83,10 +83,13 @@ public class Startup
             TenantId = this.Configuration["SaaSApiConfiguration:TenantId"],
             Environment = this.Configuration["SaaSApiConfiguration:Environment"]
         };
-        string keyVaultUrl = $"https://{config.ClientCertificate}.vault.azure.net/";
+        string keyVaultUrl = $"https://{config.KeyVault}.vault.azure.net/";
 
-        string certificatename = "pfx-cert";
-        var certHelper = new CertificateHelper(keyVaultUrl, certificatename, config.ClientCertificatePassword);
+        string certificateName = "pfx-cert";
+        string certificatePassword = "pfx-pwd";
+
+        var certHelper = new CertificateHelper(keyVaultUrl, certificateName, certificatePassword);
+        
 
         // Use the synchronous method to get the certificate
         X509Certificate2 certificate = certHelper.GetCertificate();

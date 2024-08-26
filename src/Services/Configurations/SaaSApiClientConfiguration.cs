@@ -91,12 +91,12 @@ public class SaaSApiClientConfiguration
     public string AdAuthenticationEndPoint { get; set; }
 
     /// <summary>
-    /// Gets or sets the client certificate
+    /// Gets or sets the keyvault name
     /// </summary>
     /// <value>
     /// The Authentication end point.
     /// </value>
-    public string ClientCertificate { get; set; }
+    public string KeyVault { get; set; }
 
     /// <summary>
     /// Gets or sets the client certificate password
