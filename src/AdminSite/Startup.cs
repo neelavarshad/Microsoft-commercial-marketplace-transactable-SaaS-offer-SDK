@@ -95,8 +95,8 @@ public class Startup
         };
 
         System.Console.WriteLine($"Keyvault: {config.KeyVault}");
-        System.Console.WriteLine($"Client Certificate: {config.ClientCertificate}");
-        System.Console.WriteLine($"Client Certificate password: {config.ClientCertificatePassword}");
+        //System.Console.WriteLine($"Client Certificate: {config.ClientCertificate}");
+        //System.Console.WriteLine($"Client Certificate password: {config.ClientCertificatePassword}");
 
         //string keyvault = CertificateHelper.ExtractVaultName(config.ClientCertificate);
         //System.Console.WriteLine($"Extracted Keyvault: {keyvault}");
