@@ -81,6 +81,8 @@ public class Startup
             FulFillmentAPIBaseURL = this.Configuration["SaaSApiConfiguration:FulFillmentAPIBaseURL"],
             MTClientId = this.Configuration["SaaSApiConfiguration:MTClientId"] ?? Guid.Empty.ToString(),
             KeyVault = this.Configuration["SaaSApiConfiguration:KeyVault"] ?? String.Empty,
+            ClientCertificate = this.Configuration["SaaSApiConfiguration:ClientCertificate"] ?? String.Empty,
+            ClientCertificatePassword = this.Configuration["SaaSApiConfiguration:ClientCertificatePassword"] ?? String.Empty,
             FulFillmentAPIVersion = this.Configuration["SaaSApiConfiguration:FulFillmentAPIVersion"],
             GrantType = this.Configuration["SaaSApiConfiguration:GrantType"],
             Resource = this.Configuration["SaaSApiConfiguration:Resource"],
