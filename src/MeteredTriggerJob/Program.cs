@@ -41,9 +41,7 @@ class Program
             GrantType = configuration["SaaSApiConfiguration:GrantType"],
             Resource = configuration["SaaSApiConfiguration:Resource"],
             TenantId = configuration["SaaSApiConfiguration:TenantId"],
-            KeyVault = configuration["SaaSApiConfiguration:KeyVault"],
-            ClientCertificate = configuration["SaaSApiConfiguration:ClientCertificate"],
-            ClientCertificatePassword = configuration["SaaSApiConfiguration:ClientCertificatePassword"]
+            KeyVault = configuration["SaaSApiConfiguration:KeyVault"]
         };
         string keyVaultUrl = $"https://{config.KeyVault}.vault.azure.net/";
         string certificateName = "pfx-cert";

@@ -39,20 +39,6 @@ public class CertificateHelper
         return GetCertificateAsync().GetAwaiter().GetResult();
     }
 
-    public static string ExtractSecretName(string input)
-    {
-        System.Console.WriteLine($"Extracting secret name from input: {input}");
-        string pattern = @"SecretName=([^;)]+)";
-        Match match = Regex.Match(input, pattern);
-        return match.Success ? match.Groups[1].Value : string.Empty;
-    }
-
-    public static string ExtractVaultName(string input)
-    {
-        System.Console.WriteLine($"Extracting vault name from input: {input}");
-        string pattern = @"VaultName=([^;)]+)";
-        Match match = Regex.Match(input, pattern);
-        return match.Success ? match.Groups[1].Value : string.Empty;
-    }
+    
 
 }

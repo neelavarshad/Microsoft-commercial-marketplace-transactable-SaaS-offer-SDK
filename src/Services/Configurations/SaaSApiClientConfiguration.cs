@@ -99,22 +99,6 @@ public class SaaSApiClientConfiguration
     public string KeyVault { get; set; }
 
     /// <summary>
-    /// Gets or sets the certificate name
-    /// </summary>
-    /// <value>
-    /// The Authentication end point.
-    /// </value>
-    public string ClientCertificate { get; set; }
-
-    /// <summary>
-    /// Gets or sets the client certificate password
-    /// </summary>
-    /// <value>
-    /// The Authentication end point.
-    /// </value>
-    public string ClientCertificatePassword { get; set; }
-
-    /// <summary>
     /// Gets or sets the saa s application URL.
     /// </summary>
     /// <value>
