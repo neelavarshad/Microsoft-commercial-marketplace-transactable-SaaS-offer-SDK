@@ -89,8 +89,6 @@ public class Startup
 
         var certHelper = new CertificateHelper(keyVaultUrl, certificateName, certificatePassword);
 
-
-        // Use the synchronous method to get the certificate
         X509Certificate2 certificate = certHelper.GetCertificate();
 
         var creds = new ClientCertificateCredential(config.TenantId.ToString(), config.ClientId.ToString(), certificate);

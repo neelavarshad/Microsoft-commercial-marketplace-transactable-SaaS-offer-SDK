@@ -94,13 +94,6 @@ public class Startup
             KnownUsers = this.Configuration["KnownUsers"],
         };
 
-        System.Console.WriteLine($"Keyvault: {config.KeyVault}");
-        System.Console.WriteLine($"Client Certificate: {config.ClientCertificate}");
-        System.Console.WriteLine($"Client Certificate password: {config.ClientCertificatePassword}");
-
-        //string keyvault = CertificateHelper.ExtractVaultName(config.ClientCertificate);
-        //System.Console.WriteLine($"Extracted Keyvault: {keyvault}");
-
         string keyVaultUrl = $"https://{config.KeyVault}.vault.azure.net/";
         string certificateName = "pfx-cert";
         string certificatePassword = "pfx-pwd";
